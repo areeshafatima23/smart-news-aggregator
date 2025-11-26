@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>News Aggregator</title>
+  <style>
+    body { font-family: Arial, sans-serif; padding: 20px; background: #f4f4f4; }
+    .news-container { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; }
+    .news-card { background: white; border-radius: 8px; overflow: hidden; box-shadow: 0 2px 6px rgba(0,0,0,0.1); }
+    .news-card img { width: 100%; height: 180px; object-fit: cover; }
+    .news-card .content { padding: 15px; }
+    .news-card h2 { font-size: 18px; margin-bottom: 10px; }
+    .news-card p { font-size: 14px; margin-bottom: 10px; }
+    .news-card a { color: blue; text-decoration: none; }
+    .news-card a:hover { text-decoration: underline; }
+  </style>
+</head>
+<body>
+  <h1>Top Headlines</h1>
+  <div id="news" class="news-container"></div>
+
+  <script>
+    async function fetchNews() {
+      const container = document.getElementById("news");
+      container.innerHTML = "<p>Loading news...</p>";
+      try {
+        const res = await fetch("http://localhost:5000/api/news");
+        const data = await res.json();
+        container.innerHTML = "";
+
+        data.articles.forEach(article => {
+          const card = document.createElement("div");
+          card.className = "news-card";
+
+          const img = article.urlToImage
+            ? `<img src="${article.urlToImage}" alt="${article.title}">`
+            : "";
+
+          const desc = article.description ? `<p>${article.description}</p>` : "";
+
+          card.innerHTML = `
+            ${img}
+            <div class="content">
+              <h2>${article.title}</h2>
+              ${desc}
+              <a href="${article.url}" target="_blank">Read more</a>
+            </div>
+          `;
+
+          container.appendChild(card);
+        });
+      } catch (err) {
+        console.error(err);
+        container.innerHTML = "<p>Failed to fetch news.</p>";
+      }
+    }
+
+    fetchNews();
+  </script>
+</body>
+</html>

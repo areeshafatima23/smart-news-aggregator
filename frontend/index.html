@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>News Aggregator</title>
+  <link rel="stylesheet" href="css/style.css">
+ 
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f4f4f4;
+      margin: 0;
+    }
+
+    .news-container {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 20px;
+    }
+
+    .news-card { 
+      background: white; 
+      border-radius: 8px; 
+      overflow: hidden; 
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1); 
+    }
+
+    .news-card img { width: 100%; height: 180px; object-fit: cover; }
+    .news-card .content { padding: 15px; }
+    .news-card h2 { font-size: 18px; margin-bottom: 10px; }
+    .news-card p { font-size: 14px; margin-bottom: 10px; }
+    .news-card a { color: blue; text-decoration: none; }
+    .news-card a:hover { text-decoration: underline; }
+  </style>
+</head>
+<body>
+
+<div id="layout">
+
+  <aside id="leftSidebar" class="left-sidebar">
+    <div class="sidebar-top">
+      <div class="brand">
+        <div class="brand-icon">NT</div>
+        <div class="brand-title">
+          <div class="app-name">News Today</div>
+          <div class="app-sub">Your briefing</div>
+        </div>
+      </div>
+
+      <div class="sidebar-search">
+        <input id="sidebarSearch" type="search" placeholder="Search..." />
+      </div>
+
+      <div class="sidebar-icons">
+        <button class="icon-btn">?</button>
+        <button class="icon-btn">⚙</button>
+        <button class="icon-btn">▦</button>
+      </div>
+    </div>
+
+    <nav class="sidebar-nav">
+      <ul>
+        <li><button class="nav-item active">Home</button></li>
+        <li><button class="nav-item">For you</button></li>
+        <li><button class="nav-item">Following</button></li>
+        <li><button class="nav-item">Politics</button></li>
+        <li><button class="nav-item">World</button></li>
+        <li><button class="nav-item">Local</button></li>
+        <li><button class="nav-item">Business</button></li>
+        <li><button class="nav-item">Technology</button></li>
+        <li><button class="nav-item">Entertainment</button></li>
+        <li><button class="nav-item">Sports</button></li>
+        <li><button class="nav-item">Science</button></li>
+        <li><button class="nav-item">Health</button></li>
+      </ul>
+    </nav>
+
+    <div class="sidebar-bottom">
+      <button id="signinBtn" class="signin-btn">Sign in</button>
+    </div>
+  </aside>
+
+  <div class="page-with-sidebar">
+
+<!-- header row: title | datetime | city+temp -->
+<div id="headline-row">
+  <div id="headline-left">
+    <h1>Today's briefing</h1>
+    <div id="current-datetime" aria-live="polite"></div>
+  </div>
+
+  <div id="headline-right">
+    <div id="city-weather" role="status" aria-live="polite">
+      <div class="city-name">Islamabad</div>
+      <div class="city-temp">--°C</div>
+      <div class="weather-note">Loading…</div>
+    </div>
+  </div>
+</div>
+
+
+<div class="content-layout">
+  <div id="news" class="news-container"></div>
+
+  <div id="picks-section">
+    <h3>Picks for you</h3>
+    <div id="picks"></div>
+  </div>
+</div>
+
+
+
+<!-- </div> -->
+
+
+
+    <!-- <script>
+      async function fetchNews() {
+      const container = document.getElementById("news");
+      container.innerHTML = "<p>Loading news...</p>";
+
+      try {
+        const res = await fetch("http://localhost:5000/api/news");
+        const data = await res.json();
+        container.innerHTML = "";
+
+        // --- Score-based ranking ---
+        function scoreArticle(article) {
+          let score = 0;
+          if (article.urlToImage) score += 10;
+          if (article.title?.length > 40) score += 5;
+          const majorSources = ["BBC", "CNN", "Reuters", "The Guardian", "Al Jazeera"];
+          if (majorSources.some(src => article.source?.name?.includes(src))) score += 15;
+          return score;
+        }
+
+        // Sort by score
+        const sortedArticles = data.articles.sort((a, b) => scoreArticle(b) - scoreArticle(a));
+
+        // Hero = first one
+        const heroArticle = sortedArticles[0];
+        const otherArticles = sortedArticles.slice(1);
+
+        // --- Create Hero Card ---
+        const heroCard = document.createElement("div");
+        heroCard.className = "news-card hero";
+
+        heroCard.innerHTML = `
+          <img src="${heroArticle.urlToImage || ''}">
+          <div class="content">
+            <div class="meta">
+              <span class="source">${heroArticle.source?.name || "Unknown"}</span>
+              <span class="time">${new Date(heroArticle.publishedAt).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</span>
+            </div>
+            <h1>${heroArticle.title}</h1>
+            <p>${heroArticle.description || ''}</p>
+            <a class="read-btn" href="${heroArticle.url}" target="_blank">Read more</a>
+          </div>
+        `;
+
+        container.appendChild(heroCard);
+
+        // --- Other Smaller Cards ---
+        otherArticles.forEach(article => {
+          const card = document.createElement("div");
+          card.className = "news-card";
+
+          card.innerHTML = `
+            ${article.urlToImage ? `<img src="${article.urlToImage}">` : ""}
+            <div class="content">
+              <div class="meta">
+                <span class="source">${article.source?.name || "Unknown"}</span>
+                <span class="time">${new Date(article.publishedAt).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</span>
+              </div>
+              <h2>${article.title}</h2>
+              <p>${article.description || ''}</p>
+              <a class="read-btn" href="${article.url}" target="_blank">Read more</a>
+            </div>
+          `;
+          container.appendChild(card);
+        });
+
+      } catch (err) {
+        console.error(err);
+        container.innerHTML = "<p>Failed to fetch news.</p>";
+      }
+      // --- Generate Picks for You ---
+      function generatePicks(articles) {
+        const picksContainer = document.getElementById("picks");
+        picksContainer.innerHTML = "";
+
+        // Randomly shuffle and pick 3 articles
+        const picks = articles
+          .sort(() => 0.5 - Math.random())
+          .slice(0, 3);
+
+        picks.forEach(article => {
+          const pickDiv = document.createElement("div");
+          pickDiv.className = "pick-card";
+
+          const img = article.urlToImage ? `<img src="${article.urlToImage}">` : "";
+
+          pickDiv.innerHTML = `
+            ${img}
+            <h4>${article.title}</h4>
+          `;
+
+          pickDiv.onclick = () => window.open(article.url, "_blank");
+          picksContainer.appendChild(pickDiv);
+        });
+      }
+
+      // Call after rendering main news:
+      generatePicks(data.articles);
+
+    }
+
+
+      fetchNews();
+    </script> -->
+
+  </div> 
+</div>
+ <script src="js/script.js"></script>
+
+</body>
+</html>
