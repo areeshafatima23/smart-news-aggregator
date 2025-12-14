@@ -1,0 +1,508 @@
+/* ----------------------------------
+   COLOR VARIABLES
+---------------------------------- */
+:root {
+  --primary: #1e3a8a;
+  --background: #f1f5f9;
+  --text: #111827;
+  --accent: #ffb703;
+  --card: #ffffff;
+
+  --mint-bg: #DFF0D8;
+  --mint-soft: #EAF6EA;
+  --accent-green: #2E7D32;
+  --muted: #6b6b6b;
+}
+
+/* RESET + GLOBAL */
+* {
+  box-sizing: border-box;
+}
+
+html, body {
+  height: 100%;
+  margin: 0;
+  font-family: "Open Sans", Arial, sans-serif;
+  background: var(--background);
+  color: var(--text);
+}
+
+/* ----------------------------------
+   MAIN LAYOUT WRAPPER
+---------------------------------- */
+#layout {
+  display: flex;
+  min-height: 100vh;
+}
+
+/* ----------------------------------
+   SIDEBAR (LEFT)
+---------------------------------- */
+.left-sidebar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 232px;
+  height: 100vh;
+
+  background: var(--mint-bg);
+  border-right: 1px solid rgba(0,0,0,0.06);
+
+  padding: 18px 14px;
+  overflow-y: auto;
+  z-index: 100;
+}
+
+/* ---------- page-with-sidebar: keep as a vertical stack (header above content) ---------- */
+#layout .page-with-sidebar {
+  margin-left: 232px;   /* same width as left sidebar */
+  flex: 1;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;   /* header on top, content-layout below */
+  gap: 20px;
+}
+/* ----------------------------------
+     SIDEBAR SECTIONS
+---------------------------------- */
+.sidebar-top .brand {
+  display:flex;
+  gap:10px;
+  align-items:center;
+  margin-bottom: 12px;
+}
+
+.brand-icon {
+  width:40px; height:40px;
+  border-radius:50%;
+  background: var(--accent-green);
+  color: white;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-weight:700;
+}
+
+.brand-title .app-name { font-weight:600; color:#0b3a0f; }
+.brand-title .app-sub  { font-size:12px; color:var(--muted); }
+
+.sidebar-search input[type="search"] {
+  width:100%;
+  padding: 8px 10px;
+  border-radius: 999px;
+  border: 1px solid rgba(0,0,0,0.06);
+  background: var(--mint-soft);
+  margin: 10px 0 12px;
+}
+
+/* Sidebar icons */
+.sidebar-icons {
+  display:flex;
+  gap:6px;
+  align-items:center;
+  margin-bottom:12px;
+}
+.icon-btn {
+  width:34px; height:34px;
+  border-radius:8px;
+  border:none;
+  background:transparent;
+  font-size:16px;
+  color:var(--muted);
+  cursor:pointer;
+}
+
+/* Nav list */
+.sidebar-nav ul { 
+  list-style:none; 
+  padding:0; 
+  margin:6px 0 80px; 
+}
+.sidebar-nav li { margin:6px 0; }
+
+.nav-item {
+  width:100%;
+  text-align:left;
+  padding:10px 12px;
+  border-radius:10px;
+  background: transparent;
+  border: none;
+  font-size: 14px;
+  cursor:pointer;
+  color: #08320f;
+}
+.nav-item:hover { background: rgba(0,0,0,0.03); }
+.nav-item.active { 
+  background: #e8f6e8; 
+  color: var(--accent-green); 
+  font-weight:600; 
+}
+
+/* Bottom Sign-in button */
+.sidebar-bottom {
+  position: absolute;
+  bottom: 20px;
+  left: 14px;
+  right:14px;
+}
+.signin-btn {
+  width:100%;
+  padding:10px;
+  border-radius:8px;
+  border:none;
+  background: var(--accent-green);
+  color: #fff;
+  font-weight:600;
+  cursor:pointer;
+}
+
+/* Sidebar scrollbar */
+.left-sidebar::-webkit-scrollbar { width:8px; }
+.left-sidebar::-webkit-scrollbar-thumb { 
+  background: rgba(0,0,0,0.12); 
+  border-radius:6px; 
+}
+/* First big main news card */
+.main-news-card {
+  grid-column: 1 / -1;
+  height: 350px;
+}
+
+.main-news-card img {
+  height: 100%;
+  object-fit: cover;
+}
+/* ----------------------------------
+   NEWS GRID
+---------------------------------- */
+.news-container {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 18px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+/* Responsive: collapse columns to 2 then 1 on small screens */
+@media (max-width: 1000px) {
+  .news-container {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+@media (max-width: 640px) {
+  .news-container {
+    grid-template-columns: 1fr;
+  }
+  #picks-section {
+    display: none; /* hide or collapse picks on very small screens */
+  }
+}
+/* Smaller cards */
+.news-card {
+  height: auto;
+}
+/* Hover effect */
+.news-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 6px 16px rgba(0,0,0,0.12);
+}
+
+/* Card image */
+.news-card img {
+  width: 100%;
+  height: 200px;
+  object-fit: cover;
+  border-bottom: 1px solid #eee;
+}
+
+/* Placeholder when no image */
+.placeholder-img {
+  width: 100%;
+  height: 200px;
+  background: #d5e6d3;
+  color: #2e7d32;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+}
+
+/* Card text */
+.news-card .content {
+  padding: 14px 16px;
+}
+
+.news-card .news-title {
+  font-size: 16px;
+  font-weight: 700;
+  margin-bottom: 8px;
+  color: #08320f;
+}
+
+.news-card p {
+  font-size: 14px;
+  color: #444;
+  margin-bottom: 10px;
+}
+
+/* Read more link */
+.news-card .read-more {
+  color: #2e7d32;
+  font-weight: 600;
+  text-decoration: none;
+  font-size: 14px;
+}
+
+.news-card .read-more:hover {
+  text-decoration: underline;
+}
+
+/* === FEATURED MAIN CARD === */
+.news-card.featured {
+  grid-column: span 2;
+  height: 350px;
+  display: flex;
+  flex-direction: column;
+}
+
+.news-card.featured img {
+  height: 250px;
+}
+
+.news-card.featured .news-title {
+  font-size: 20px;
+}
+
+.news-card.featured p {
+  font-size: 15px;
+}
+.meta {
+  display: flex;
+  justify-content: space-between;
+  font-size: 12px;
+  color: #555;
+  margin-bottom: 5px;
+}
+
+.source {
+  background: #e8f6e8;
+  padding: 2px 6px;
+  border-radius: 5px;
+  font-weight: 600;
+  color: #2e7d32;
+}
+
+.time {
+  color: #666;
+  font-size: 11px;
+}
+
+.read-btn {
+  display: inline-block;
+  margin-top: 8px;
+  font-size: 14px;
+  padding: 6px 10px;
+  border-radius: 6px;
+  background: #2e7d32;
+  color: #fff;
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.read-btn:hover {
+  background: #256628;
+}
+
+.news-card.hero,
+.news-card.main-news-card {
+  /* allow content height to expand naturally */
+  grid-column: 1 / -1;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  height: auto;             /* important: remove fixed total height */
+  overflow: visible;        /* allow content to be visible */
+  border: 2px solid #2e7d32;
+}
+
+/* Make the image a fixed-height media area at the top */
+.news-card.hero img,
+.news-card.main-news-card img {
+  width: 100%;
+  height: 260px;            /* fixed hero image height (adjustable) */
+  object-fit: cover;
+  flex: 0 0 260px;          /* reserve that space, do NOT stretch */
+  display: block;
+}
+
+/* Small cards: keep auto height; images set to fixed height for consistent grid */
+.news-card:not(.hero):not(.main-news-card) img {
+  height: 180px;
+  object-fit: cover;
+}
+
+/* Content area under the image */
+.news-card.hero .content,
+.news-card.main-news-card .content {
+  padding: 16px;
+  background: var(--card);  /* ensures text sits on card background */
+  color: var(--text);
+  flex: 1 1 auto;
+}
+
+/* Hero title should be prominent */
+.news-card.hero h1,
+.news-card.main-news-card h1 {
+  margin: 6px 0 10px;
+  font-size: 24px;
+  line-height: 1.15;
+  color: #08320f;
+}
+
+/* keep meta visible and not overlaid */
+.news-card.hero .meta,
+.news-card.main-news-card .meta {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 8px;
+  font-size: 12px;
+  color: #555;
+}
+
+/* Picks column fixed width and sticky */
+#picks-section {
+  width: 300px;
+  position: sticky;
+  top: 20px;
+  height: fit-content;
+  background: #fafafa;
+  padding: 12px;
+  border-left: 1px solid rgba(0,0,0,0.06);
+  box-sizing: border-box;
+  border-radius: 6px;
+}
+
+#picks-section h3 {
+  margin-bottom: 10px;
+  font-size: 20px;
+  font-weight: bold;
+}
+
+.pick-card {
+  background: white;
+  padding: 12px;
+  margin-bottom: 15px;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+  border-radius: 6px;
+}
+
+.pick-card:hover {
+  transform: scale(1.03);
+}
+
+.pick-card img {
+  width: 70px;
+  height: 60px;
+  border-radius: 5px;
+  object-fit: cover;
+}
+
+.pick-card h4 {
+  font-size: 14px;
+  margin: 0;
+  line-height: 1.2;
+}
+
+.page-with-sidebar {
+  display: flex;
+  gap: 25px;
+  width: 100%;
+}
+#news {
+  flex: 1;
+}
+/* ---------- layout that holds the news grid (left) + picks (right) ---------- */
+.content-layout {
+  display: flex;            /* NEWS (flex:1) on left, PICKS fixed width on right */
+  gap: 20px;
+  align-items: flex-start;
+  width: 100%;
+}
+
+/* HEADLINE ROW: title + datetime on left, city+temp on right */
+#headline-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 18px;
+  width: 100%;
+  box-sizing: border-box;
+  padding-bottom: 6px;
+}
+
+/* left: Title + datetime stacked */
+#headline-left {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+/* datetime styling */
+#current-datetime {
+  font-size: 14px;
+  color: #53605f;
+  font-weight: 500;
+}
+
+/* right: weather card */
+#headline-right {
+  display: flex;
+  align-items: center;
+}
+
+/* city/weather mini-card */
+#city-weather {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  background: #ffffff;
+  padding: 10px 12px;
+  border-radius: 10px;
+  box-shadow: 0 2px 8px rgba(7,9,22,0.06);
+  min-width: 140px;
+  text-align: center;
+  font-weight: 600;
+}
+
+#city-weather .city-name {
+  font-size: 14px;
+  color: #08320f;
+}
+
+#city-weather .city-temp {
+  font-size: 20px;
+  color: var(--accent-green);
+  font-weight: 700;
+}
+
+/* small note line e.g., "Now • Clear" or "Using fallback" */
+#city-weather .weather-note {
+  font-size: 12px;
+  color: #666;
+  font-weight: 500;
+}
+
+/* make sure the headline row doesn't push the news too far */
+#layout .page-with-sidebar h1 { margin: 0; }
+
+/* Responsive: collapse weather to the right under small screens */
+@media (max-width: 900px) {
+  #headline-row {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+  #headline-right { width: 100%; display:flex; justify-content:flex-start; }
+}
+
